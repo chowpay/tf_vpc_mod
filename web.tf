@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 module "vpc" {
-  source        = "./vpc"
+  #source        = "./vpc"
+  source = "github.com/chowpay/tf_vpc_mod.git?ref=v0.0.1"
   name          = "web"
   cidr          = "10.0.0.0/16"
   public_subnet = "10.0.1.0/24"
@@ -12,7 +13,7 @@ module "vpc" {
 resource "aws_instance" "web" {
   ami                         = "${lookup(var.ami, var.region)}"
   instance_type               = "${var.instance_type}"
-  key_name                    = "${var.key_name}"
+#  key_name                    = "${var.key_name}"
   subnet_id                   = "${module.vpc.public_subnet_id}"
   private_ip                  = "${var.instance_ips[count.index]}"
   user_data                   = "${file("files/web_bootstrap.sh")}"
@@ -24,6 +25,7 @@ resource "aws_instance" "web" {
 
   tags {
     Name = "web-${format("%03d", count.index + 1)}"
+    Owner = "${element(var.owner_tag,count.index)}"
   }
 
   count = "${length(var.instance_ips)}"

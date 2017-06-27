@@ -26,4 +26,14 @@ variable "instance_type" {
   default = "t2.micro"
 }
 
+variable "instance_ips" {
+  description = "IPs to use for our instances"
+  default = ["10.0.1.20", "10.0.1.21"]
+}
+
+
+variable "owner_tag"{
+  default = ["team1", "team2"]
+}
+
 
